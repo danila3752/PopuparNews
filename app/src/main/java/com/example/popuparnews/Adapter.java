@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -68,17 +69,37 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Articles a = articles.get(position);
-
+       // holder.position=position;
         String imageUrl = a.getUrlToImage();
         String url = a.getUrl();
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.placeholder(Utils.getRandomDrawbleColor());
+        requestOptions.error(Utils.getRandomDrawbleColor());
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
+        requestOptions.centerCrop();
+        Glide.with(context).load(imageUrl).apply(requestOptions).listener(new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+               holder.progressBar.setVisibility(View.GONE);
+                return false;
+            }
 
-        Picasso.with(context).load(imageUrl).into(holder.imageView);
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+               holder.progressBar.setVisibility(View.GONE);
+                return false;
+            }
+        }).transition(DrawableTransitionOptions.withCrossFade()).into(holder.imageView);
+       // Picasso.with(context).load(imageUrl).into(holder.imageView);
 //holder.source.setText();
         holder.tvTitle.setText(a.getTitle());
         holder.desc.setText(a.getDescription());
         holder.author.setText(a.getAuthor());
         holder.published_at.setText(Utils.DateFormat(a.getPublishedAt()));
         holder.tvDate.setText("\u2022" + Utils.DateToTimeFormat(a.getPublishedAt()));
+
+        holder.setData(a);
     }
 
     @Override
@@ -89,23 +110,42 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tvTitle, tvSource, tvDate,desc,author,published_at,source;
         ImageView imageView;
+
         RecyclerView recyclerView;
+        ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             tvTitle = itemView.findViewById(androidx.core.R.id.title);
             tvSource = itemView.findViewById(R.id.source);
             tvDate = itemView.findViewById(R.id.time);
             imageView = itemView.findViewById(R.id.img);
-            desc=itemView.findViewById(R.id.descr);
-            published_at=itemView.findViewById(R.id.publishedAt);
-            author=itemView.findViewById(R.id.author);
-            source=itemView.findViewById(R.id.source);
+            desc = itemView.findViewById(R.id.descr);
+            published_at = itemView.findViewById(R.id.publishedAt);
+            author = itemView.findViewById(R.id.author);
+            source = itemView.findViewById(R.id.source);
             recyclerView = itemView.findViewById(R.id.RecyclerView);
+            progressBar=itemView.findViewById(R.id.prograss_load_photo);
 
         }
 
+
+        public  void setData(Articles article){
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent= new Intent(context,NewsDetailActive.class);
+                    //    Articles article=articles.get(a);
+                    intent.putExtra("url",article.getUrl());
+                    intent.putExtra("title",article.getTitle());
+                    intent.putExtra("img",article.getUrlToImage());
+                    intent.putExtra("date",article.getPublishedAt());
+                    intent.putExtra("author",article.getAuthor());
+
+                    context.startActivity(intent);
+                }
+            });
+        }
         @Override
         public void onClick(View v) {
 

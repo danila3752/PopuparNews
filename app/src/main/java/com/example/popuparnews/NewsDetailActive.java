@@ -52,7 +52,7 @@ private String mUrl,mImg,mTitle,mDate,mSource,mAuthor;
         date=findViewById(R.id.date);
         time=findViewById(R.id.time);
         title=findViewById(R.id.title);
-
+        imageView=findViewById(R.id.img2);
         Intent intent=getIntent();
         mUrl=intent.getStringExtra("url");
         mImg=intent.getStringExtra("img");

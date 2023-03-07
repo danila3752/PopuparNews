@@ -85,8 +85,10 @@ topheadlines.setVisibility(View.INVISIBLE);
 
                     adapter = new Adapter(MainActivity.this, articles);
                     recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
 
-                    initListener();
+
+                    //initListener();
                     topheadlines.setVisibility(View.VISIBLE);
                     swipeRefreshLayout.setRefreshing(false);
 
@@ -106,19 +108,8 @@ topheadlines.setVisibility(View.INVISIBLE);
     }
 
 
-    private void initListener(){
-        adapter.setOnItemClickListener((view, position) -> {
-            Intent intent= new Intent(MainActivity.this,NewsDetailActive.class);
-            Articles article=articles.get(position);
-            intent.putExtra("url",article.getUrl());
-            intent.putExtra("title",article.getTitle());
-            intent.putExtra("img",article.getUrlToImage());
-            intent.putExtra("date",article.getPublishedAt());
-            intent.putExtra("author",article.getAuthor());
 
-            startActivity(intent);
-        });
-    }
+
 
     public String getCountry() {
         Locale locale = Locale.getDefault();
