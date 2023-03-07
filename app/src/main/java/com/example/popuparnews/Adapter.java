@@ -8,9 +8,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +26,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.popuparnews.models.Articles;
-import com.example.popuparnews.models.Source;
 import com.squareup.picasso.Picasso;
 
 import org.ocpsoft.prettytime.PrettyTime;
@@ -40,10 +41,21 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     Context context;
     List<Articles> articles;
 
+    private OnItemClickListener onItemClickListener;
+
 
     public Adapter(Context context, List<Articles> articles) {
         this.context = context;
         this.articles = articles;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener=onItemClickListener;
+
+    }
+
+    public interface OnItemClickListener{
+        void onItemClickListener(View view,int position);
     }
 
     @NonNull
@@ -55,21 +67,18 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-
-
         final Articles a = articles.get(position);
 
         String imageUrl = a.getUrlToImage();
         String url = a.getUrl();
 
         Picasso.with(context).load(imageUrl).into(holder.imageView);
-
+//holder.source.setText();
         holder.tvTitle.setText(a.getTitle());
-        holder.tvSource.setText(((Source) a.getSource()).getName());
-        holder.tvDate.setText("\u2022" + dateTime(a.getPublishedAt()));
-
-
-
+        holder.desc.setText(a.getDescription());
+        holder.author.setText(a.getAuthor());
+        holder.published_at.setText(Utils.DateFormat(a.getPublishedAt()));
+        holder.tvDate.setText("\u2022" + Utils.DateToTimeFormat(a.getPublishedAt()));
     }
 
     @Override
@@ -77,8 +86,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return articles.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvSource, tvDate;
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        TextView tvTitle, tvSource, tvDate,desc,author,published_at,source;
         ImageView imageView;
         RecyclerView recyclerView;
 
@@ -89,7 +98,16 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             tvSource = itemView.findViewById(R.id.source);
             tvDate = itemView.findViewById(R.id.time);
             imageView = itemView.findViewById(R.id.img);
+            desc=itemView.findViewById(R.id.descr);
+            published_at=itemView.findViewById(R.id.publishedAt);
+            author=itemView.findViewById(R.id.author);
+            source=itemView.findViewById(R.id.source);
             recyclerView = itemView.findViewById(R.id.RecyclerView);
+
+        }
+
+        @Override
+        public void onClick(View v) {
 
         }
     }
@@ -115,7 +133,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return country.toLowerCase();
     }
 }
-
 
 
 // holder.source.setText(((Source) model.getSource()).getName());

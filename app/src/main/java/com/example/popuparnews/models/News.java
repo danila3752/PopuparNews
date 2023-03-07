@@ -19,6 +19,8 @@ public class News {
     @Expose
     private List<Articles> articles;
 
+
+
     public String getStatus() {
         return status;
     }
@@ -30,6 +32,10 @@ public class News {
     public String getTotalResults() {
         return totalResults;
     }
+
+
+
+
 
     public void setTotalResults(String totalResults) {
         this.totalResults = totalResults;

@@ -2,6 +2,7 @@ package com.example.popuparnews;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.provider.SyncStateContract;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -29,6 +30,12 @@ public class Utils {
         int idx = new Random().nextInt(vibrantLightColorList.length);
         return vibrantLightColorList[idx];
     }
+    public static String getLanguage(){
+        Locale locale = Locale.getDefault();
+        String language = String.valueOf(locale.getLanguage());
+        return language;
+    }
+
 
     public static String DateToTimeFormat(String oldstringDate){
         PrettyTime p = new PrettyTime(new Locale(getCountry()));

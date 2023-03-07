@@ -8,9 +8,9 @@ import javax.xml.transform.Source;
 public class Articles {
 
 
-    @SerializedName("source")
-    @Expose
-    private Source source;
+  //  @SerializedName("source")
+  //  @Expose
+  //  private Source source;
 
     @SerializedName("author")
     @Expose
@@ -46,13 +46,13 @@ public class Articles {
 
 
 
-    public Source getSource() {
-        return source;
-    }
+   // public Source getSource() {
+   //     return source;
+  //  }
 
-    public void setSource(Source source) {
-        this.source = source;
-    }
+//    public void setSource(Source source) {
+   //     this.source = source;
+ //   }
 
     public String getAuthor() {
         return author;
